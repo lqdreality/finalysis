@@ -32,8 +32,20 @@ while a <= len(sys.argv)-1 :
 	elif sys.argv[a] == '--plot' :
 		PLOT_LIB = sys.argv[a+1].lower()
 		a += 2
+	elif sys.argv[a] == '--help' :
+		print('Options:\n'+\
+			  '  -i SYMBOL1 SYMBOL2 ... : list of ticker symbols\n'+\
+			  '  -f file : csv file with "Symbol" column\n'+\
+			  '  --average : for display of average curve\n'+\
+			  '  --plot matplotlib | plotly : different plotting lib\n'+
+			  '  -n : normalized y-axis (by max close price in history)\n'+\
+			  '  -h Xd | Xmo | Xy : where X is history')
+		exit()
 	else :
 		raise Exception(f'Unrecognized option: {sys.argv[a]}')
+
+if TICKER_FILE is None and len(TICKER_LIST) == 0 :
+	raise Exception('Must supply input with either -f or -i. Use --help for details.')
 
 if PLOT_LIB == 'matplotlib' :
 	import matplotlib.pyplot as plt
@@ -113,6 +125,9 @@ def main () :
 		fig.update_yaxes(range=[0,1])
 		fig.update_layout(yaxis_title='% of history max',
 			              font=dict(size=20))
+		fig.update_layout(shapes=[dict(type='line',
+			                           xref='paper',x0=0,x1=1,
+			                           yref='y',y0=0.5,y1=0.5)])
 		"""
 		fig.update_layout(title="Plot Title",
                           xaxis_title="x Axis Title",
